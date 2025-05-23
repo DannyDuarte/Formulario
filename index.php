@@ -80,118 +80,136 @@ try {
     <meta charset="UTF-8">
     <title>Formulario de Registro</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+        
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f5f5;
+            font-family: 'Poppins', sans-serif;
+            background-color: #f3e5f5; /* Fondo lila claro */
             padding: 20px;
-            color: #333;
+            color: #4a148c; /* Texto morado oscuro */
         }
         .container {
             max-width: 1000px;
             margin: 0 auto;
             background: white;
             padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(149, 117, 205, 0.3); /* Sombra morada */
         }
         h1, h2 {
-            color: #444;
+            color: #7b1fa2; /* Morado medio */
             margin-bottom: 25px;
-            border-bottom: 1px solid #eee;
+            border-bottom: 2px solid #e1bee7; /* Borde lila */
             padding-bottom: 10px;
+            font-weight: 600;
         }
         
-        /* ESTILOS PARA EL FORMULARIO (MODIFICADOS) */
+        /* ESTILOS PARA EL FORMULARIO */
         .form-section {
-            background: #f9f9f9;
-            padding: 25px;
-            border-radius: 8px;
+            background: linear-gradient(145deg, #f8bbd0, #e1bee7); /* Degradado rosado a lila */
+            padding: 30px;
+            border-radius: 12px;
             margin-bottom: 30px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            box-shadow: 0 3px 10px rgba(156, 39, 176, 0.1);
         }
         .form-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
+            gap: 25px;
         }
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
         .form-group label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             font-weight: 500;
-            color: #555;
+            color: #6a1b9a; /* Morado oscuro */
+            font-size: 15px;
         }
         .form-group input {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            padding: 14px;
+            border: 2px solid #ce93d8; /* Borde lila */
+            border-radius: 8px;
             font-size: 16px;
-            transition: border 0.3s;
+            transition: all 0.3s;
+            background-color: rgba(255, 255, 255, 0.8);
         }
         .form-group input:focus {
-            border-color: #4a90e2;
+            border-color: #9c27b0; /* Morado */
             outline: none;
-            box-shadow: 0 0 0 3px rgba(74,144,226,0.1);
+            box-shadow: 0 0 0 3px rgba(156, 39, 176, 0.2);
+            background-color: white;
         }
         .btn-submit {
-            background-color: #4a90e2;
+            background: linear-gradient(to right, #9c27b0, #e91e63); /* Degradado morado a rosado */
             color: white;
             border: none;
-            padding: 12px 25px;
+            padding: 14px 30px;
             font-size: 16px;
-            border-radius: 4px;
+            font-weight: 500;
+            border-radius: 8px;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: all 0.3s;
             display: block;
             width: auto;
-            margin: 25px auto 0;
+            margin: 30px auto 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 6px rgba(156, 39, 176, 0.3);
         }
         .btn-submit:hover {
-            background-color: #3a7bc8;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(156, 39, 176, 0.4);
+            background: linear-gradient(to right, #8e24aa, #d81b60);
         }
         
         /* ESTILOS PARA LOS MENSAJES */
         .response {
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 4px;
+            padding: 16px;
+            margin: 25px 0;
+            border-radius: 8px;
+            font-weight: 500;
         }
         .response.error {
-            background-color: #ffebee;
-            color: #c62828;
-            border-left: 4px solid #f44336;
+            background-color: #fce4ec; /* Rosado claro */
+            color: #c2185b; /* Rosado oscuro */
+            border-left: 4px solid #e91e63; /* Rosado */
         }
         .response.success {
-            background-color: #e8f5e9;
-            color: #2e7d32;
-            border-left: 4px solid #4caf50;
+            background-color: #f3e5f5; /* Lila claro */
+            color: #7b1fa2; /* Morado */
+            border-left: 4px solid #9c27b0; /* Morado */
         }
         
-        /* ESTILOS PARA LA TABLA (MANTENIDOS COMO ESTABAN) */
+        /* ESTILOS PARA LA TABLA (AJUSTADOS AL TEMA MORADO) */
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 30px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(156, 39, 176, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
         }
         th, td {
-            padding: 12px;
-            border-bottom: 1px solid #ddd;
+            padding: 14px;
+            border-bottom: 1px solid #e1bee7; /* Borde lila */
             text-align: left;
         }
         th {
-            background-color: #6c757d;
+            background: linear-gradient(to right, #9c27b0, #7b1fa2); /* Degradado morado */
             color: white;
             font-weight: 500;
+            text-transform: uppercase;
+            font-size: 14px;
+            letter-spacing: 0.5px;
         }
         tr:nth-child(even) {
-            background-color: #f9f9f9;
+            background-color: #f8f0fc; /* Lila muy claro */
         }
         tr:hover {
-            background-color: #f1f1f1;
+            background-color: #f3e5f5; /* Lila claro */
         }
     </style>
 </head>
@@ -230,7 +248,7 @@ try {
                     <input type="text" name="telefono" required>
                 </div>
             </div>
-            <button type="submit" name="enviar" class="btn-submit">ENVIAR</button>
+            <button type="submit" name="enviar" class="btn-submit">Enviar Datos</button>
         </form>
     </div>
 
