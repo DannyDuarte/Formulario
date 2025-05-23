@@ -4,24 +4,24 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-// Configuración de la base de datos (USANDO TU CONEXIÓN)
+// Configuración de la base de datos
 define('DB_SERVER', 'tcp:database0123.database.windows.net,1433');
 define('DB_DATABASE', 'Lab5_1PaaS');
 define('DB_USERNAME', 'database0123');
-define('DB_PASSWORD', 'Hola12345678'); // Cambia esto por tu contraseña real
+define('DB_PASSWORD', 'Hola12345678');
 
 // Función para validar datos
 function validarDatos($datos) {
     $errores = [];
-
+    
     if (empty(trim($datos['nombre']))) {
         $errores[] = 'El nombre es requerido';
     }
-
+    
     if (empty(trim($datos['primer_apellido']))) {
         $errores[] = 'El primer apellido es requerido';
     }
-
+    
     if (!filter_var($datos['correo'], FILTER_VALIDATE_EMAIL)) {
         $errores[] = 'El correo electrónico no es válido';
     }
@@ -29,7 +29,7 @@ function validarDatos($datos) {
     if (!preg_match('/^[0-9]{10,15}$/', $datos['telefono'])) {
         $errores[] = 'El teléfono debe contener solo números (10-15 dígitos)';
     }
-
+    
     return $errores;
 }
 
@@ -38,13 +38,12 @@ $error = false;
 $registros = [];
 
 try {
-    // Conexión usando PDO con tu configuración
     $conn = new PDO("sqlsrv:server = ".DB_SERVER."; Database = ".DB_DATABASE, DB_USERNAME, DB_PASSWORD);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     if (isset($_POST['enviar'])) {
         $errores = validarDatos($_POST);
-
+        
         if (empty($errores)) {
             $stmt = $conn->prepare("INSERT INTO [dbo].[usuarios] 
                 (nombre, primer_apellido, segundo_apellido, correo, telefono, fecha_registro)
@@ -64,7 +63,6 @@ try {
         }
     }
 
-    // Obtener registros
     $stmt = $conn->query("SELECT * FROM [dbo].[usuarios] ORDER BY id DESC");
     $registros = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -82,37 +80,51 @@ try {
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
-            background-color: #f3e5f5; /* morado claro */
+            background-color: #f3e5f5; /* fondo claro tipo lavanda */
             padding: 40px;
             color: #4a148c;
         }
+
         .form-container {
-            background: #ffffff;
+            background: #6a1b9a; /* morado fuerte */
             padding: 30px;
             border-radius: 12px;
-            max-width: 600px;
+            max-width: 650px;
             margin: auto;
-            box-shadow: 0 0 20px rgba(74, 20, 140, 0.2);
+            box-shadow: 0 0 25px rgba(74, 0, 110, 0.2);
+            color: white;
         }
+
         h1, h2 {
             text-align: center;
-            color: #6a1b9a;
+            color: white;
         }
+
         .form-group {
             margin-bottom: 15px;
         }
+
         label {
             display: block;
             margin-bottom: 6px;
-            color: #6a1b9a;
+            color: #e1bee7;
         }
+
         input {
             width: 100%;
             padding: 10px;
             font-size: 15px;
-            border: 1px solid #ce93d8;
+            border: 1px solid #ba68c8;
             border-radius: 6px;
+            background-color: #fce4ec;
+            color: #4a148c;
         }
+
+        input:focus {
+            outline: none;
+            border-color: #ce93d8;
+        }
+
         .btn-submit {
             width: 100%;
             padding: 12px;
@@ -123,39 +135,48 @@ try {
             font-size: 16px;
             cursor: pointer;
         }
+
         .btn-submit:hover {
             background-color: #7b1fa2;
         }
+
         .response {
             margin-top: 20px;
             padding: 15px;
             border-left: 5px solid;
             border-radius: 6px;
         }
+
         .response.error {
             background-color: #fdecea;
             border-color: #f44336;
             color: #c62828;
         }
+
         .response.success {
             background-color: #e0f7e9;
             border-color: #2e7d32;
             color: #2e7d32;
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 30px;
         }
+
         th, td {
             padding: 10px;
             border-bottom: 1px solid #ccc;
         }
+
         th {
             background-color: #8e24aa;
             color: white;
         }
+
         td {
+            background-color: #f3e5f5;
             color: #4a148c;
         }
     </style>
@@ -163,7 +184,7 @@ try {
 <body>
 
 <div class="form-container">
-    <h1>Formulario De Usuario</h1>
+    <h1>Registro de Usuario</h1>
 
     <?php if ($mensaje): ?>
         <div class="response <?= $error ? 'error' : 'success' ?>">
