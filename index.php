@@ -152,10 +152,18 @@ try {
         th, td {
             padding: 10px;
             border-bottom: 1px solid #ce93d8;
+            text-align: left;
         }
         th {
             background-color: #7b1fa2;
             color: white;
+        }
+        td {
+            background-color: #ffffff;
+            color: #333333; /* Color oscuro para mejor contraste */
+        }
+        tr:nth-child(even) td {
+            background-color: #f5f5f5; /* Fondo alterno para mejor legibilidad */
         }
     </style>
 </head>
