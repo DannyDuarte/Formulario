@@ -1,57 +1,115 @@
+<?php
+// Mostrar errores en desarrollo
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+// Configuración de la base de datos (USANDO TU CONEXIÓN)
+define('DB_SERVER', 'tcp:database0123.database.windows.net,1433');
+define('DB_DATABASE', 'Lab5_1PaaS');
+define('DB_USERNAME', 'database0123');
+define('DB_PASSWORD', 'Hola12345678');
+
+// Función para validar datos
+function validarDatos($datos) {
+    $errores = [];
+    
+    if (empty(trim($datos['nombre']))) {
+        $errores[] = 'El nombre es requerido';
+    }
+    
+    if (empty(trim($datos['primer_apellido']))) {
+        $errores[] = 'El primer apellido es requerido';
+    }
+    
+    if (!filter_var($datos['correo'], FILTER_VALIDATE_EMAIL)) {
+        $errores[] = 'El correo electrónico no es válido';
+    }
+
+    if (!preg_match('/^[0-9]{10,15}$/', $datos['telefono'])) {
+        $errores[] = 'El teléfono debe contener solo números (10-15 dígitos)';
+    }
+    
+    return $errores;
+}
+
+$mensaje = '';
+$error = false;
+$registros = [];
+
+try {
+    $conn = new PDO("sqlsrv:server = ".DB_SERVER."; Database = ".DB_DATABASE, DB_USERNAME, DB_PASSWORD);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    if (isset($_POST['enviar'])) {
+        $errores = validarDatos($_POST);
+        
+        if (empty($errores)) {
+            $stmt = $conn->prepare("INSERT INTO [dbo].[usuarios] 
+                (nombre, primer_apellido, segundo_apellido, correo, telefono, fecha_registro)
+                VALUES (:nombre, :primer_apellido, :segundo_apellido, :correo, :telefono, GETDATE())");
+            $stmt->execute([
+                ':nombre' => trim($_POST['nombre']),
+                ':primer_apellido' => trim($_POST['primer_apellido']),
+                ':segundo_apellido' => trim($_POST['segundo_apellido']),
+                ':correo' => $_POST['correo'],
+                ':telefono' => preg_replace('/[^0-9]/', '', $_POST['telefono'])
+            ]);
+            $mensaje = 'Datos guardados correctamente.';
+        } else {
+            $error = true;
+            $mensaje = implode('<br>', $errores);
+        }
+    }
+
+    $stmt = $conn->query("SELECT * FROM [dbo].[usuarios] ORDER BY id DESC");
+    $registros = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+} catch (PDOException $e) {
+    $error = true;
+    $mensaje = 'Error de base de datos: ' . $e->getMessage();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulario de Registro</title>
+    <title>Registro de Usuario</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #4361ee;
-            --primary-light: #4895ef;
-            --secondary: #3f37c9;
-            --dark: #1b263b;
-            --light: #f8f9fa;
-            --success: #4cc9f0;
-            --danger: #f72585;
-            --warning: #f8961e;
-            --info: #560bad;
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --primary: #6a3093;
+            --primary-light: #a044ff;
+            --secondary: #4b0082;
+            --dark: #2d0a4a;
+            --light: #f9f5ff;
+            --text: #3a0ca3;
+            --success: #9d4edd;
+            --danger: #ff006e;
         }
         
         body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            background: linear-gradient(135deg, #e0c4fd 0%, #b8b3ff 100%);
+            font-family: 'Montserrat', sans-serif;
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             padding: 2rem;
+            color: var(--dark);
         }
         
         .container {
-            width: 100%;
             max-width: 1200px;
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
+            margin: 0 auto;
         }
         
         .card {
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(106, 48, 147, 0.2);
             overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+            margin-bottom: 2rem;
         }
         
         .card-header {
@@ -62,8 +120,10 @@
         }
         
         .card-header h1, .card-header h2 {
-            font-weight: 600;
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
             margin: 0;
+            letter-spacing: 1px;
         }
         
         .card-body {
@@ -77,74 +137,70 @@
         }
         
         .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
+            margin-bottom: 1.5rem;
         }
         
         .form-group label {
-            font-weight: 500;
-            color: var(--dark);
-            font-size: 0.9rem;
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text);
         }
         
         .form-control {
-            padding: 0.8rem 1rem;
-            border: 2px solid #e9ecef;
-            border-radius: 8px;
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #d9c7f8;
+            border-radius: 10px;
             font-size: 1rem;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
+            background-color: rgba(255, 255, 255, 0.8);
         }
         
         .form-control:focus {
-            outline: none;
             border-color: var(--primary-light);
-            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+            box-shadow: 0 0 0 3px rgba(160, 68, 255, 0.2);
+            outline: none;
         }
         
         .btn {
-            padding: 1rem;
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            background: var(--secondary);
-            transform: translateY(-2px);
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(106, 48, 147, 0.4);
         }
         
         .alert {
             padding: 1rem;
-            border-radius: 8px;
+            border-radius: 10px;
             margin-bottom: 1.5rem;
             display: flex;
             align-items: center;
-            gap: 1rem;
         }
         
         .alert-success {
-            background-color: rgba(76, 201, 240, 0.1);
+            background-color: rgba(157, 78, 221, 0.1);
             border-left: 4px solid var(--success);
-            color: #0e7490;
+            color: var(--text);
         }
         
         .alert-danger {
-            background-color: rgba(247, 37, 133, 0.1);
+            background-color: rgba(255, 0, 110, 0.1);
             border-left: 4px solid var(--danger);
-            color: #be185d;
+            color: #8a0a40;
         }
         
         table {
@@ -152,56 +208,40 @@
             border-collapse: separate;
             border-spacing: 0;
             margin-top: 1.5rem;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(106, 48, 147, 0.1);
         }
         
         th {
             background: linear-gradient(to right, var(--primary), var(--secondary));
             color: white;
-            padding: 1rem;
+            padding: 15px;
             text-align: left;
-            position: sticky;
-            top: 0;
+            font-weight: 600;
         }
         
         td {
-            padding: 1rem;
-            border-bottom: 1px solid #e9ecef;
-            background: white;
+            padding: 12px 15px;
+            border-bottom: 1px solid #f0e5ff;
+        }
+        
+        tr:last-child td {
+            border-bottom: none;
         }
         
         tr:hover td {
-            background: #f8f9fa;
-        }
-        
-        th:first-child {
-            border-top-left-radius: 8px;
-        }
-        
-        th:last-child {
-            border-top-right-radius: 8px;
-        }
-        
-        tr:last-child td:first-child {
-            border-bottom-left-radius: 8px;
-        }
-        
-        tr:last-child td:last-child {
-            border-bottom-right-radius: 8px;
-        }
-        
-        .table-responsive {
-            overflow-x: auto;
-            border-radius: 8px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            background-color: #f9f5ff;
         }
         
         @media (max-width: 768px) {
-            .card-body {
-                padding: 1.5rem;
-            }
-            
             .form-grid {
                 grid-template-columns: 1fr;
+            }
+            
+            .card-body {
+                padding: 1.5rem;
             }
         }
     </style>
@@ -242,9 +282,7 @@
                             <input type="text" name="telefono" class="form-control" required>
                         </div>
                     </div>
-                    <button type="submit" name="enviar" class="btn btn-primary" style="margin-top: 1.5rem;">
-                        Enviar Datos
-                    </button>
+                    <button type="submit" name="enviar" class="btn">Enviar</button>
                 </form>
             </div>
         </div>
@@ -255,34 +293,32 @@
                 <h2>Usuarios Registrados</h2>
             </div>
             <div class="card-body">
-                <div class="table-responsive">
-                    <table>
-                        <thead>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Primer Apellido</th>
+                            <th>Segundo Apellido</th>
+                            <th>Correo</th>
+                            <th>Teléfono</th>
+                            <th>Fecha Registro</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($registros as $r): ?>
                             <tr>
-                                <th>ID</th>
-                                <th>Nombre</th>
-                                <th>Primer Apellido</th>
-                                <th>Segundo Apellido</th>
-                                <th>Correo</th>
-                                <th>Teléfono</th>
-                                <th>Fecha Registro</th>
+                                <td><?= $r['id'] ?></td>
+                                <td><?= htmlspecialchars($r['nombre']) ?></td>
+                                <td><?= htmlspecialchars($r['primer_apellido']) ?></td>
+                                <td><?= htmlspecialchars($r['segundo_apellido'] ?? '') ?></td>
+                                <td><?= htmlspecialchars($r['correo']) ?></td>
+                                <td><?= htmlspecialchars($r['telefono']) ?></td>
+                                <td><?= date('d/m/Y H:i', strtotime($r['fecha_registro'])) ?></td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($registros as $r): ?>
-                                <tr>
-                                    <td><?= $r['id'] ?></td>
-                                    <td><?= htmlspecialchars($r['nombre']) ?></td>
-                                    <td><?= htmlspecialchars($r['primer_apellido']) ?></td>
-                                    <td><?= htmlspecialchars($r['segundo_apellido'] ?? '') ?></td>
-                                    <td><?= htmlspecialchars($r['correo']) ?></td>
-                                    <td><?= htmlspecialchars($r['telefono']) ?></td>
-                                    <td><?= date('d/m/Y H:i', strtotime($r['fecha_registro'])) ?></td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
             </div>
         </div>
         <?php endif; ?>
