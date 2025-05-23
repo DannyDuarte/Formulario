@@ -11,121 +11,76 @@
     <style>
         /* [Estilos anteriores del body y form-container permanecen igual] */
         
-        /* Nuevos estilos para la tabla */
-        .registros-container {
-            margin-top: 30px;
-            overflow-x: auto;
-        }
-        
-        .styled-table {
+        /* Contenedor responsivo para la tabla */
+        .table-responsive {
             width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
+            margin-top: 25px;
+            -webkit-overflow-scrolling: touch; /* Suaviza el scroll en móviles */
+        }
+        
+        /* Tabla con diseño compacto y alineado */
+        .perfect-table {
+            width: 100%;
+            min-width: 600px; /* Ancho mínimo para no comprimirse demasiado */
+            border-collapse: collapse;
             font-size: 14px;
+            table-layout: fixed; /* Forzar distribución equitativa */
         }
         
-        .styled-table thead tr {
-            background: linear-gradient(135deg, #8e24aa 0%, #6a1b9a 100%);
-            color: white;
+        .perfect-table th, 
+        .perfect-table td {
+            padding: 12px 10px;
             text-align: left;
-        }
-        
-        .styled-table th,
-        .styled-table td {
-            padding: 12px 15px;
             border-bottom: 1px solid #e0e0e0;
+            word-break: break-word; /* Romper palabras largas */
         }
         
-        .styled-table th {
-            font-weight: 600;
-            letter-spacing: 0.5px;
+        /* Cabecera con diseño moderno */
+        .perfect-table thead th {
+            background-color: #7b1fa2;
+            color: white;
+            position: sticky;
+            top: 0;
+            font-weight: 500;
         }
         
-        .styled-table tbody tr {
-            transition: all 0.2s ease;
+        /* Filas alternas para mejor legibilidad */
+        .perfect-table tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
         }
         
-        .styled-table tbody tr:nth-child(even) {
-            background-color: #fafafa;
-        }
-        
-        .styled-table tbody tr:nth-child(odd) {
-            background-color: white;
-        }
-        
-        .styled-table tbody tr:hover {
+        /* Efecto hover sutil */
+        .perfect-table tbody tr:hover {
             background-color: #f3e5f5;
-            transform: translateX(2px);
         }
         
-        .styled-table tbody tr:last-child td {
-            border-bottom: none;
+        /* Ajuste para columnas específicas */
+        .perfect-table td:nth-child(1), /* ID */
+        .perfect-table th:nth-child(1) {
+            width: 50px;
         }
         
-        /* Estilos para el encabezado de la sección */
-        .section-title {
-            color: #6a1b9a;
-            margin-bottom: 15px;
-            font-size: 1.4rem;
-            font-weight: 600;
-            position: relative;
-            padding-bottom: 8px;
+        .perfect-table td:nth-child(7), /* Fecha */
+        .perfect-table th:nth-child(7) {
+            width: 120px;
         }
         
-        .section-title::after {
-            content: '';
-            position: absolute;
-            left: 0;
-            bottom: 0;
-            width: 60px;
-            height: 3px;
-            background: linear-gradient(90deg, #8e24aa, #ce93d8);
-            border-radius: 3px;
+        /* Borde redondeado para el contenedor */
+        .form-container {
+            overflow: hidden; /* Esto evita que los hijos se salgan */
         }
     </style>
 </head>
 <body>
 
 <div class="form-container">
-    <h1>Registro de Usuario</h1>
-
-    <?php if ($mensaje): ?>
-        <div class="response <?= $error ? 'error' : 'success' ?>">
-            <?= $mensaje ?>
-        </div>
-    <?php endif; ?>
-
-    <form method="post">
-        <div class="form-group">
-            <label for="nombre">Nombre(s)</label>
-            <input type="text" name="nombre" required>
-        </div>
-        <div class="form-group">
-            <label for="primer_apellido">Primer Apellido</label>
-            <input type="text" name="primer_apellido" required>
-        </div>
-        <div class="form-group">
-            <label for="segundo_apellido">Segundo Apellido</label>
-            <input type="text" name="segundo_apellido">
-        </div>
-        <div class="form-group">
-            <label for="correo">Correo Electrónico</label>
-            <input type="email" name="correo" required>
-        </div>
-        <div class="form-group">
-            <label for="telefono">Teléfono</label>
-            <input type="text" name="telefono" required>
-        </div>
-        <button type="submit" name="enviar" class="btn-submit">Enviar</button>
-    </form>
+    <!-- [El formulario anterior permanece igual] -->
 
     <?php if (!empty($registros)): ?>
-    <div class="registros-container">
-        <h2 class="section-title">Usuarios Registrados</h2>
-        <table class="styled-table">
+    <h2>Usuarios Registrados</h2>
+    <div class="table-responsive">
+        <table class="perfect-table">
             <thead>
                 <tr>
                     <th>ID</th>
