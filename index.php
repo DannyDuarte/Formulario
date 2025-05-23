@@ -4,12 +4,13 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-// Configuración de la base de datos
+// Configuración de la base de datos (USANDO TU CONEXIÓN)
 define('DB_SERVER', 'tcp:database0123.database.windows.net,1433');
 define('DB_DATABASE', 'Lab5_1PaaS');
 define('DB_USERNAME', 'database0123');
-define('DB_PASSWORD', 'Hola12345678');
+define('DB_PASSWORD', 'Hola12345678'); // Cambia esto por tu contraseña real
 
+// Función para validar datos
 function validarDatos($datos) {
     $errores = [];
     
@@ -80,18 +81,17 @@ try {
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #6a1b9a;
+            background-color: #f3e8ff;
             padding: 40px;
-            color: #ffffff;
+            color: #4a006e;
         }
         .form-container {
             background: #ffffff;
             padding: 30px;
             border-radius: 12px;
-            max-width: 900px;
+            max-width: 650px;
             margin: auto;
             box-shadow: 0 0 25px rgba(74, 0, 110, 0.2);
-            overflow-x: auto;
         }
         h1, h2 {
             text-align: center;
@@ -104,7 +104,6 @@ try {
             display: block;
             margin-bottom: 6px;
             font-weight: 500;
-            color: #4a006e;
         }
         input {
             width: 100%;
@@ -149,33 +148,15 @@ try {
             width: 100%;
             border-collapse: collapse;
             margin-top: 30px;
-            table-layout: fixed;
-            word-wrap: break-word;
         }
         th, td {
             padding: 10px;
             border-bottom: 1px solid #ce93d8;
-            text-align: left;
-            overflow: hidden;
-            text-overflow: ellipsis;
         }
         th {
             background-color: #7b1fa2;
             color: white;
-            position: sticky;
-            top: 0;
         }
-        tr:nth-child(even) {
-            background-color: #f3e5f5;
-        }
-        /* Definición de anchos de columnas */
-        th:nth-child(1), td:nth-child(1) { width: 5%; }
-        th:nth-child(2), td:nth-child(2) { width: 12%; }
-        th:nth-child(3), td:nth-child(3) { width: 15%; }
-        th:nth-child(4), td:nth-child(4) { width: 15%; }
-        th:nth-child(5), td:nth-child(5) { width: 20%; }
-        th:nth-child(6), td:nth-child(6) { width: 12%; }
-        th:nth-child(7), td:nth-child(7) { width: 15%; }
     </style>
 </head>
 <body>
@@ -216,30 +197,26 @@ try {
     <?php if (!empty($registros)): ?>
     <h2>Usuarios Registrados</h2>
     <table>
-        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Primer Apellido</th>
+            <th>Segundo Apellido</th>
+            <th>Correo</th>
+            <th>Teléfono</th>
+            <th>Fecha Registro</th>
+        </tr>
+        <?php foreach ($registros as $r): ?>
             <tr>
-                <th>ID</th>
-                <th>Nombre</th>
-                <th>Primer Apellido</th>
-                <th>Segundo Apellido</th>
-                <th>Correo</th>
-                <th>Teléfono</th>
-                <th>Fecha Registro</th>
+                <td><?= $r['id'] ?></td>
+                <td><?= htmlspecialchars($r['nombre']) ?></td>
+                <td><?= htmlspecialchars($r['primer_apellido']) ?></td>
+                <td><?= htmlspecialchars($r['segundo_apellido'] ?? '') ?></td>
+                <td><?= htmlspecialchars($r['correo']) ?></td>
+                <td><?= htmlspecialchars($r['telefono']) ?></td>
+                <td><?= date('d/m/Y H:i', strtotime($r['fecha_registro'])) ?></td>
             </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($registros as $r): ?>
-                <tr>
-                    <td><?= $r['id'] ?></td>
-                    <td><?= htmlspecialchars($r['nombre']) ?></td>
-                    <td><?= htmlspecialchars($r['primer_apellido']) ?></td>
-                    <td><?= htmlspecialchars($r['segundo_apellido'] ?? '') ?></td>
-                    <td><?= htmlspecialchars($r['correo']) ?></td>
-                    <td><?= htmlspecialchars($r['telefono']) ?></td>
-                    <td><?= date('d/m/Y H:i', strtotime($r['fecha_registro'])) ?></td>
-                </tr>
-            <?php endforeach; ?>
-        </tbody>
+        <?php endforeach; ?>
     </table>
     <?php endif; ?>
 </div>
