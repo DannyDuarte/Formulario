@@ -13,15 +13,15 @@ define('DB_PASSWORD', 'Hola12345678'); // Cambia esto por tu contraseña real
 // Función para validar datos
 function validarDatos($datos) {
     $errores = [];
-    
+
     if (empty(trim($datos['nombre']))) {
         $errores[] = 'El nombre es requerido';
     }
-    
+
     if (empty(trim($datos['primer_apellido']))) {
         $errores[] = 'El primer apellido es requerido';
     }
-    
+
     if (!filter_var($datos['correo'], FILTER_VALIDATE_EMAIL)) {
         $errores[] = 'El correo electrónico no es válido';
     }
@@ -29,7 +29,7 @@ function validarDatos($datos) {
     if (!preg_match('/^[0-9]{10,15}$/', $datos['telefono'])) {
         $errores[] = 'El teléfono debe contener solo números (10-15 dígitos)';
     }
-    
+
     return $errores;
 }
 
@@ -38,12 +38,13 @@ $error = false;
 $registros = [];
 
 try {
+    // Conexión usando PDO con tu configuración
     $conn = new PDO("sqlsrv:server = ".DB_SERVER."; Database = ".DB_DATABASE, DB_USERNAME, DB_PASSWORD);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     if (isset($_POST['enviar'])) {
         $errores = validarDatos($_POST);
-        
+
         if (empty($errores)) {
             $stmt = $conn->prepare("INSERT INTO [dbo].[usuarios] 
                 (nombre, primer_apellido, segundo_apellido, correo, telefono, fecha_registro)
@@ -63,6 +64,7 @@ try {
         }
     }
 
+    // Obtener registros
     $stmt = $conn->query("SELECT * FROM [dbo].[usuarios] ORDER BY id DESC");
     $registros = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -77,40 +79,39 @@ try {
 <head>
     <meta charset="UTF-8">
     <title>Formulario de Registro</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f3e8ff;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f3e5f5; /* morado claro */
             padding: 40px;
-            color: #4a006e;
+            color: #4a148c;
         }
         .form-container {
             background: #ffffff;
             padding: 30px;
             border-radius: 12px;
-            max-width: 650px;
+            max-width: 600px;
             margin: auto;
-            box-shadow: 0 0 25px rgba(74, 0, 110, 0.2);
+            box-shadow: 0 0 20px rgba(74, 20, 140, 0.2);
         }
         h1, h2 {
             text-align: center;
             color: #6a1b9a;
         }
         .form-group {
-            margin-bottom: 16px;
+            margin-bottom: 15px;
         }
         label {
             display: block;
             margin-bottom: 6px;
-            font-weight: 500;
+            color: #6a1b9a;
         }
         input {
             width: 100%;
             padding: 10px;
             font-size: 15px;
-            border: 1px solid #b39ddb;
-            border-radius: 8px;
+            border: 1px solid #ce93d8;
+            border-radius: 6px;
         }
         .btn-submit {
             width: 100%;
@@ -118,30 +119,27 @@ try {
             background-color: #8e24aa;
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
             font-size: 16px;
-            font-weight: bold;
             cursor: pointer;
-            transition: background-color 0.3s ease;
         }
         .btn-submit:hover {
-            background-color: #6a1b9a;
+            background-color: #7b1fa2;
         }
         .response {
             margin-top: 20px;
             padding: 15px;
             border-left: 5px solid;
-            border-radius: 8px;
-            font-weight: 500;
+            border-radius: 6px;
         }
         .response.error {
-            background-color: #fbe9f1;
-            border-color: #d81b60;
-            color: #ad1457;
+            background-color: #fdecea;
+            border-color: #f44336;
+            color: #c62828;
         }
         .response.success {
-            background-color: #e8f5e9;
-            border-color: #43a047;
+            background-color: #e0f7e9;
+            border-color: #2e7d32;
             color: #2e7d32;
         }
         table {
@@ -151,18 +149,21 @@ try {
         }
         th, td {
             padding: 10px;
-            border-bottom: 1px solid #ce93d8;
+            border-bottom: 1px solid #ccc;
         }
         th {
-            background-color: #7b1fa2;
+            background-color: #8e24aa;
             color: white;
+        }
+        td {
+            color: #4a148c;
         }
     </style>
 </head>
 <body>
 
 <div class="form-container">
-    <h1>Registro de Usuario</h1>
+    <h1>Formulario De Usuario</h1>
 
     <?php if ($mensaje): ?>
         <div class="response <?= $error ? 'error' : 'success' ?>">
