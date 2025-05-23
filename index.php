@@ -4,11 +4,11 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-// Configuración de la base de datos
+// Configuración de la base de datos (USANDO TU CONEXIÓN)
 define('DB_SERVER', 'tcp:database0123.database.windows.net,1433');
 define('DB_DATABASE', 'Lab5_1PaaS');
 define('DB_USERNAME', 'database0123');
-define('DB_PASSWORD', 'Hola12345678');
+define('DB_PASSWORD', 'Hola12345678'); // Cambia esto por tu contraseña real
 
 // Función para validar datos
 function validarDatos($datos) {
@@ -77,107 +77,86 @@ try {
 <head>
     <meta charset="UTF-8">
     <title>Formulario de Registro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: #f3e5f5; /* fondo claro tipo lavanda */
+            font-family: 'Poppins', sans-serif;
+            background-color: #6a1b9a; /* Cambiado a morado fuerte */
             padding: 40px;
-            color: #4a148c;
+            color: #ffffff; /* Cambiado texto a blanco para mejor contraste */
         }
-
         .form-container {
-            background: #6a1b9a; /* morado fuerte */
+            background: #ffffff;
             padding: 30px;
             border-radius: 12px;
             max-width: 650px;
             margin: auto;
             box-shadow: 0 0 25px rgba(74, 0, 110, 0.2);
-            color: white;
         }
-
         h1, h2 {
             text-align: center;
-            color: white;
+            color: #6a1b9a;
         }
-
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 16px;
         }
-
         label {
             display: block;
             margin-bottom: 6px;
-            color: #e1bee7;
+            font-weight: 500;
+            color: #4a006e; /* Color morado oscuro para las etiquetas */
         }
-
         input {
             width: 100%;
             padding: 10px;
             font-size: 15px;
-            border: 1px solid #ba68c8;
-            border-radius: 6px;
-            background-color: #fce4ec;
-            color: #4a148c;
+            border: 1px solid #b39ddb;
+            border-radius: 8px;
         }
-
-        input:focus {
-            outline: none;
-            border-color: #ce93d8;
-        }
-
         .btn-submit {
             width: 100%;
             padding: 12px;
             background-color: #8e24aa;
             color: white;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             font-size: 16px;
+            font-weight: bold;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
-
         .btn-submit:hover {
-            background-color: #7b1fa2;
+            background-color: #6a1b9a;
         }
-
         .response {
             margin-top: 20px;
             padding: 15px;
             border-left: 5px solid;
-            border-radius: 6px;
+            border-radius: 8px;
+            font-weight: 500;
         }
-
         .response.error {
-            background-color: #fdecea;
-            border-color: #f44336;
-            color: #c62828;
+            background-color: #fbe9f1;
+            border-color: #d81b60;
+            color: #ad1457;
         }
-
         .response.success {
-            background-color: #e0f7e9;
-            border-color: #2e7d32;
+            background-color: #e8f5e9;
+            border-color: #43a047;
             color: #2e7d32;
         }
-
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 30px;
         }
-
         th, td {
             padding: 10px;
-            border-bottom: 1px solid #ccc;
+            border-bottom: 1px solid #ce93d8;
         }
-
         th {
-            background-color: #8e24aa;
+            background-color: #7b1fa2;
             color: white;
-        }
-
-        td {
-            background-color: #f3e5f5;
-            color: #4a148c;
         }
     </style>
 </head>
