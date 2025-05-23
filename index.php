@@ -8,7 +8,7 @@ error_reporting(E_ALL);
 define('DB_SERVER', 'tcp:database0123.database.windows.net,1433');
 define('DB_DATABASE', 'Lab5_1PaaS');
 define('DB_USERNAME', 'database0123');
-define('DB_PASSWORD', 'Hola12345678');
+define('DB_PASSWORD', 'Hola12345678'); // Cambia esto por tu contraseña real
 
 // Función para validar datos
 function validarDatos($datos) {
@@ -38,6 +38,7 @@ $error = false;
 $registros = [];
 
 try {
+    // Conexión usando PDO con tu configuración
     $conn = new PDO("sqlsrv:server = ".DB_SERVER."; Database = ".DB_DATABASE, DB_USERNAME, DB_PASSWORD);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
@@ -55,6 +56,7 @@ try {
                 ':correo' => $_POST['correo'],
                 ':telefono' => preg_replace('/[^0-9]/', '', $_POST['telefono'])
             ]);
+
             $mensaje = 'Datos guardados correctamente.';
         } else {
             $error = true;
@@ -62,6 +64,7 @@ try {
         }
     }
 
+    // Obtener registros
     $stmt = $conn->query("SELECT * FROM [dbo].[usuarios] ORDER BY id DESC");
     $registros = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -75,253 +78,170 @@ try {
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro de Usuario</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <title>Formulario de Registro</title>
     <style>
-        :root {
-            --primary: #6a3093;
-            --primary-light: #a044ff;
-            --secondary: #4b0082;
-            --dark: #2d0a4a;
-            --light: #f9f5ff;
-            --text: #3a0ca3;
-            --success: #9d4edd;
-            --danger: #ff006e;
-        }
-        
         body {
-            background: linear-gradient(135deg, #e0c4fd 0%, #b8b3ff 100%);
-            font-family: 'Montserrat', sans-serif;
-            min-height: 100vh;
-            padding: 2rem;
-            color: var(--dark);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            padding: 40px;
+            color: #343a40;
         }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
+        .form-container {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 600px;
+            margin: auto;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
-        
-        .card {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(106, 48, 147, 0.2);
-            overflow: hidden;
-            margin-bottom: 2rem;
-        }
-        
-        .card-header {
-            background: linear-gradient(to right, var(--primary), var(--secondary));
-            color: white;
-            padding: 1.5rem;
+        h1, h2 {
             text-align: center;
+            color: #495057;
         }
-        
-        .card-header h1, .card-header h2 {
-            font-family: 'Playfair Display', serif;
-            font-weight: 700;
-            margin: 0;
-            letter-spacing: 1px;
+        h1 {
+            color: #6c757d;
+            margin-bottom: 25px;
         }
-        
-        .card-body {
-            padding: 2rem;
-        }
-        
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-        }
-        
         .form-group {
-            margin-bottom: 1.5rem;
+            margin-bottom: 20px;
         }
-        
-        .form-group label {
+        label {
             display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            color: var(--text);
+            margin-bottom: 8px;
+            color: #495057;
+            font-weight: 500;
         }
-        
-        .form-control {
+        input {
             width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #d9c7f8;
-            border-radius: 10px;
-            font-size: 1rem;
-            transition: all 0.3s;
-            background-color: rgba(255, 255, 255, 0.8);
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            background-color: #f8f9fa;
+            color: #495057;
+            transition: border-color 0.3s;
         }
-        
-        .form-control:focus {
-            border-color: var(--primary-light);
-            box-shadow: 0 0 0 3px rgba(160, 68, 255, 0.2);
-            outline: none;
+        input:focus {
+            border-color: #80bdff;
+            outline: 0;
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+            background-color: #fff;
         }
-        
-        .btn {
-            display: inline-block;
-            padding: 12px 30px;
-            background: linear-gradient(to right, var(--primary), var(--secondary));
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background-color: #28a745;
             color: white;
             border: none;
-            border-radius: 10px;
-            font-size: 1rem;
-            font-weight: 600;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 500;
             cursor: pointer;
-            transition: all 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            transition: background-color 0.3s;
         }
-        
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(106, 48, 147, 0.4);
+        .btn-submit:hover {
+            background-color: #218838;
         }
-        
-        .alert {
-            padding: 1rem;
-            border-radius: 10px;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
+        .response {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
         }
-        
-        .alert-success {
-            background-color: rgba(157, 78, 221, 0.1);
-            border-left: 4px solid var(--success);
-            color: var(--text);
+        .response.error {
+            background-color: #f8d7da;
+            border-left: 5px solid #dc3545;
+            color: #721c24;
         }
-        
-        .alert-danger {
-            background-color: rgba(255, 0, 110, 0.1);
-            border-left: 4px solid var(--danger);
-            color: #8a0a40;
+        .response.success {
+            background-color: #d4edda;
+            border-left: 5px solid #28a745;
+            color: #155724;
         }
-        
         table {
             width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-            margin-top: 1.5rem;
-            background: white;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 5px 20px rgba(106, 48, 147, 0.1);
+            border-collapse: collapse;
+            margin-top: 30px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
-        
-        th {
-            background: linear-gradient(to right, var(--primary), var(--secondary));
-            color: white;
-            padding: 15px;
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #dee2e6;
             text-align: left;
-            font-weight: 600;
         }
-        
-        td {
-            padding: 12px 15px;
-            border-bottom: 1px solid #f0e5ff;
+        th {
+            background-color: #6c757d;
+            color: white;
+            font-weight: 500;
         }
-        
-        tr:last-child td {
-            border-bottom: none;
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
         }
-        
-        tr:hover td {
-            background-color: #f9f5ff;
-        }
-        
-        @media (max-width: 768px) {
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .card-body {
-                padding: 1.5rem;
-            }
+        tr:hover {
+            background-color: #e9ecef;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="card">
-            <div class="card-header">
-                <h1>Registro de Usuario</h1>
-            </div>
-            <div class="card-body">
-                <?php if ($mensaje): ?>
-                    <div class="alert <?= $error ? 'alert-danger' : 'alert-success' ?>">
-                        <?= $mensaje ?>
-                    </div>
-                <?php endif; ?>
 
-                <form method="post">
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label for="nombre">Nombre(s)</label>
-                            <input type="text" name="nombre" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="primer_apellido">Primer Apellido</label>
-                            <input type="text" name="primer_apellido" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="segundo_apellido">Segundo Apellido</label>
-                            <input type="text" name="segundo_apellido" class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <label for="correo">Correo Electrónico</label>
-                            <input type="email" name="correo" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="telefono">Teléfono</label>
-                            <input type="text" name="telefono" class="form-control" required>
-                        </div>
-                    </div>
-                    <button type="submit" name="enviar" class="btn">Enviar</button>
-                </form>
-            </div>
-        </div>
+<div class="form-container">
+    <h1>Registro de Usuario</h1>
 
-        <?php if (!empty($registros)): ?>
-        <div class="card">
-            <div class="card-header">
-                <h2>Usuarios Registrados</h2>
-            </div>
-            <div class="card-body">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Nombre</th>
-                            <th>Primer Apellido</th>
-                            <th>Segundo Apellido</th>
-                            <th>Correo</th>
-                            <th>Teléfono</th>
-                            <th>Fecha Registro</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($registros as $r): ?>
-                            <tr>
-                                <td><?= $r['id'] ?></td>
-                                <td><?= htmlspecialchars($r['nombre']) ?></td>
-                                <td><?= htmlspecialchars($r['primer_apellido']) ?></td>
-                                <td><?= htmlspecialchars($r['segundo_apellido'] ?? '') ?></td>
-                                <td><?= htmlspecialchars($r['correo']) ?></td>
-                                <td><?= htmlspecialchars($r['telefono']) ?></td>
-                                <td><?= date('d/m/Y H:i', strtotime($r['fecha_registro'])) ?></td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
+    <?php if ($mensaje): ?>
+        <div class="response <?= $error ? 'error' : 'success' ?>">
+            <?= $mensaje ?>
         </div>
-        <?php endif; ?>
-    </div>
+    <?php endif; ?>
+
+    <form method="post">
+        <div class="form-group">
+            <label for="nombre">Nombre(s)</label>
+            <input type="text" name="nombre" required>
+        </div>
+        <div class="form-group">
+            <label for="primer_apellido">Primer Apellido</label>
+            <input type="text" name="primer_apellido" required>
+        </div>
+        <div class="form-group">
+            <label for="segundo_apellido">Segundo Apellido</label>
+            <input type="text" name="segundo_apellido">
+        </div>
+        <div class="form-group">
+            <label for="correo">Correo Electrónico</label>
+            <input type="email" name="correo" required>
+        </div>
+        <div class="form-group">
+            <label for="telefono">Teléfono</label>
+            <input type="text" name="telefono" required>
+        </div>
+        <button type="submit" name="enviar" class="btn-submit">Enviar</button>
+    </form>
+
+    <?php if (!empty($registros)): ?>
+    <h2>Usuarios Registrados</h2>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Primer Apellido</th>
+            <th>Segundo Apellido</th>
+            <th>Correo</th>
+            <th>Teléfono</th>
+            <th>Fecha Registro</th>
+        </tr>
+        <?php foreach ($registros as $r): ?>
+            <tr>
+                <td><?= $r['id'] ?></td>
+                <td><?= htmlspecialchars($r['nombre']) ?></td>
+                <td><?= htmlspecialchars($r['primer_apellido']) ?></td>
+                <td><?= htmlspecialchars($r['segundo_apellido'] ?? '') ?></td>
+                <td><?= htmlspecialchars($r['correo']) ?></td>
+                <td><?= htmlspecialchars($r['telefono']) ?></td>
+                <td><?= date('d/m/Y H:i', strtotime($r['fecha_registro'])) ?></td>
+            </tr>
+        <?php endforeach; ?>
+    </table>
+    <?php endif; ?>
+</div>
+
 </body>
 </html>
