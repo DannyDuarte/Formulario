@@ -38,7 +38,6 @@ $error = false;
 $registros = [];
 
 try {
-    // Conexión usando PDO con tu configuración
     $conn = new PDO("sqlsrv:server = ".DB_SERVER."; Database = ".DB_DATABASE, DB_USERNAME, DB_PASSWORD);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
@@ -64,7 +63,6 @@ try {
         }
     }
 
-    // Obtener registros
     $stmt = $conn->query("SELECT * FROM [dbo].[usuarios] ORDER BY id DESC");
     $registros = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -78,134 +76,86 @@ try {
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Registro de Usuario</title>
+    <title>Formulario de Registro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600&display=swap');
-        
         body {
-            font-family: 'Quicksand', sans-serif;
-            background-color: #f5f5f5;
-            padding: 20px;
-            color: #4a148c; /* Morado oscuro */
-            line-height: 1.6;
+            font-family: 'Poppins', sans-serif;
+            background-color: #f3e8ff;
+            padding: 40px;
+            color: #4a006e;
         }
-        
-        h1 {
-            color: #7b1fa2; /* Morado */
-            text-align: left;
-            font-size: 28px;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #e1bee7; /* Lila claro */
-            padding-bottom: 10px;
-        }
-        
-        h2 {
-            color: #7b1fa2; /* Morado */
-            font-size: 22px;
-            margin: 30px 0 15px 0;
-        }
-        
-        /* FORMULARIO ESTILO LISTA (como en tu segunda imagen) */
         .form-container {
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
-            margin-bottom: 30px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 650px;
+            margin: auto;
+            box-shadow: 0 0 25px rgba(74, 0, 110, 0.2);
         }
-        
+        h1, h2 {
+            text-align: center;
+            color: #6a1b9a;
+        }
         .form-group {
-            margin-bottom: 15px;
-            padding-left: 15px;
-            border-left: 3px solid #ba68c8; /* Morado medio */
+            margin-bottom: 16px;
         }
-        
-        .form-group label {
+        label {
             display: block;
+            margin-bottom: 6px;
             font-weight: 500;
-            color: #6a1b9a; /* Morado oscuro */
-            margin-bottom: 5px;
         }
-        
-        .form-group input {
+        input {
             width: 100%;
             padding: 10px;
-            border: 1px solid #ce93d8; /* Lila */
-            border-radius: 5px;
-            font-family: 'Quicksand', sans-serif;
             font-size: 15px;
+            border: 1px solid #b39ddb;
+            border-radius: 8px;
         }
-        
-        hr {
-            border: 0;
-            height: 1px;
-            background: #e1bee7; /* Lila claro */
-            margin: 25px 0;
-        }
-        
-        /* BOTÓN */
         .btn-submit {
-            background-color: #9c27b0; /* Morado */
+            width: 100%;
+            padding: 12px;
+            background-color: #8e24aa;
             color: white;
             border: none;
-            padding: 12px 25px;
+            border-radius: 8px;
             font-size: 16px;
-            border-radius: 5px;
+            font-weight: bold;
             cursor: pointer;
-            font-family: 'Quicksand', sans-serif;
-            font-weight: 600;
-            display: block;
-            margin: 20px 0;
-            transition: background 0.3s;
+            transition: background-color 0.3s ease;
         }
-        
         .btn-submit:hover {
-            background-color: #7b1fa2; /* Morado más oscuro */
+            background-color: #6a1b9a;
         }
-        
-        /* TABLA */
+        .response {
+            margin-top: 20px;
+            padding: 15px;
+            border-left: 5px solid;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+        .response.error {
+            background-color: #fbe9f1;
+            border-color: #d81b60;
+            color: #ad1457;
+        }
+        .response.success {
+            background-color: #e8f5e9;
+            border-color: #43a047;
+            color: #2e7d32;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-top: 30px;
         }
-        
         th, td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid #e1bee7; /* Lila claro */
+            padding: 10px;
+            border-bottom: 1px solid #ce93d8;
         }
-        
         th {
-            background-color: #9c27b0; /* Morado */
+            background-color: #7b1fa2;
             color: white;
-            font-weight: 500;
-        }
-        
-        tr:nth-child(even) {
-            background-color: #f3e5f5; /* Lila muy claro */
-        }
-        
-        tr:hover {
-            background-color: #e1bee7; /* Lila claro */
-        }
-        
-        /* MENSAJES */
-        .message {
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 5px;
-        }
-        
-        .error {
-            background-color: #fce4ec; /* Rosado claro */
-            color: #c2185b; /* Rosado oscuro */
-        }
-        
-        .success {
-            background-color: #f3e5f5; /* Lila claro */
-            color: #7b1fa2; /* Morado */
         }
     </style>
 </head>
@@ -213,49 +163,39 @@ try {
 
 <div class="form-container">
     <h1>Registro de Usuario</h1>
-    
+
     <?php if ($mensaje): ?>
-        <div class="message <?= $error ? 'error' : 'success' ?>">
+        <div class="response <?= $error ? 'error' : 'success' ?>">
             <?= $mensaje ?>
         </div>
     <?php endif; ?>
 
     <form method="post">
-        <h2>Nombre(s)</h2>
         <div class="form-group">
+            <label for="nombre">Nombre(s)</label>
             <input type="text" name="nombre" required>
         </div>
-        
-        <h2>Primer Apellido</h2>
         <div class="form-group">
+            <label for="primer_apellido">Primer Apellido</label>
             <input type="text" name="primer_apellido" required>
         </div>
-        
-        <h2>Segundo Apellido</h2>
         <div class="form-group">
+            <label for="segundo_apellido">Segundo Apellido</label>
             <input type="text" name="segundo_apellido">
         </div>
-        
-        <h2>Correo Electrónico</h2>
         <div class="form-group">
+            <label for="correo">Correo Electrónico</label>
             <input type="email" name="correo" required>
         </div>
-        
-        <h2>Teléfono</h2>
         <div class="form-group">
+            <label for="telefono">Teléfono</label>
             <input type="text" name="telefono" required>
         </div>
-        
-        <hr>
-        
-        <button type="submit" name="enviar" class="btn-submit">Enviar Datos</button>
+        <button type="submit" name="enviar" class="btn-submit">Enviar</button>
     </form>
-</div>
 
-<?php if (!empty($registros)): ?>
-<div class="form-container">
+    <?php if (!empty($registros)): ?>
     <h2>Usuarios Registrados</h2>
-    
     <table>
         <tr>
             <th>ID</th>
@@ -278,8 +218,8 @@ try {
             </tr>
         <?php endforeach; ?>
     </table>
+    <?php endif; ?>
 </div>
-<?php endif; ?>
 
 </body>
 </html>
