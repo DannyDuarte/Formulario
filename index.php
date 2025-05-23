@@ -83,7 +83,7 @@ try {
             font-family: 'Poppins', sans-serif;
             background-color: #f3e8ff;
             padding: 40px;
-            color: #2a0042; /* Color de texto más oscuro */
+            color: #4a006e;
         }
         .form-container {
             background: #ffffff;
@@ -95,7 +95,7 @@ try {
         }
         h1, h2 {
             text-align: center;
-            color: #4a0072; /* Morado más oscuro */
+            color: #6a1b9a;
         }
         .form-group {
             margin-bottom: 16px;
@@ -104,7 +104,6 @@ try {
             display: block;
             margin-bottom: 6px;
             font-weight: 500;
-            color: #3d0058; /* Color de etiquetas más oscuro */
         }
         input {
             width: 100%;
@@ -112,7 +111,6 @@ try {
             font-size: 15px;
             border: 1px solid #b39ddb;
             border-radius: 8px;
-            color: #2a0042; /* Color de texto de input más oscuro */
         }
         .btn-submit {
             width: 100%;
@@ -139,12 +137,12 @@ try {
         .response.error {
             background-color: #fbe9f1;
             border-color: #d81b60;
-            color: #880e4f; /* Rojo más oscuro */
+            color: #ad1457;
         }
         .response.success {
             background-color: #e8f5e9;
             border-color: #43a047;
-            color: #1b5e20; /* Verde más oscuro */
+            color: #2e7d32;
         }
         table {
             width: 100%;
@@ -154,7 +152,6 @@ try {
         th, td {
             padding: 10px;
             border-bottom: 1px solid #ce93d8;
-            color: #2a0042; /* Color de texto de tabla más oscuro */
         }
         th {
             background-color: #7b1fa2;
