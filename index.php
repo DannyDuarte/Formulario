@@ -82,81 +82,95 @@ try {
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f8f9fa;
-            padding: 40px;
-            color: #343a40;
+            background-color: #f5f5f5;
+            padding: 20px;
+            color: #333;
         }
-        .form-container {
-            background: #ffffff;
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
             padding: 30px;
             border-radius: 8px;
-            max-width: 600px;
-            margin: auto;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
         h1, h2 {
-            text-align: center;
-            color: #495057;
-        }
-        h1 {
-            color: #6c757d;
+            color: #444;
             margin-bottom: 25px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        
+        /* ESTILOS PARA EL FORMULARIO (MODIFICADOS) */
+        .form-section {
+            background: #f9f9f9;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
         }
         .form-group {
             margin-bottom: 20px;
         }
-        label {
+        .form-group label {
             display: block;
             margin-bottom: 8px;
-            color: #495057;
             font-weight: 500;
+            color: #555;
         }
-        input {
+        .form-group input {
             width: 100%;
             padding: 12px;
-            font-size: 16px;
-            border: 1px solid #ced4da;
+            border: 1px solid #ddd;
             border-radius: 4px;
-            background-color: #f8f9fa;
-            color: #495057;
-            transition: border-color 0.3s;
+            font-size: 16px;
+            transition: border 0.3s;
         }
-        input:focus {
-            border-color: #80bdff;
-            outline: 0;
-            box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
-            background-color: #fff;
+        .form-group input:focus {
+            border-color: #4a90e2;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(74,144,226,0.1);
         }
         .btn-submit {
-            width: 100%;
-            padding: 14px;
-            background-color: #28a745;
+            background-color: #4a90e2;
             color: white;
             border: none;
-            border-radius: 4px;
+            padding: 12px 25px;
             font-size: 16px;
-            font-weight: 500;
+            border-radius: 4px;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: background 0.3s;
+            display: block;
+            width: auto;
+            margin: 25px auto 0;
         }
         .btn-submit:hover {
-            background-color: #218838;
+            background-color: #3a7bc8;
         }
+        
+        /* ESTILOS PARA LOS MENSAJES */
         .response {
-            margin-top: 20px;
             padding: 15px;
+            margin: 20px 0;
             border-radius: 4px;
         }
         .response.error {
-            background-color: #f8d7da;
-            border-left: 5px solid #dc3545;
-            color: #721c24;
+            background-color: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #f44336;
         }
         .response.success {
-            background-color: #d4edda;
-            border-left: 5px solid #28a745;
-            color: #155724;
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #4caf50;
         }
+        
+        /* ESTILOS PARA LA TABLA (MANTENIDOS COMO ESTABAN) */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -165,7 +179,7 @@ try {
         }
         th, td {
             padding: 12px;
-            border-bottom: 1px solid #dee2e6;
+            border-bottom: 1px solid #ddd;
             text-align: left;
         }
         th {
@@ -174,16 +188,16 @@ try {
             font-weight: 500;
         }
         tr:nth-child(even) {
-            background-color: #f8f9fa;
+            background-color: #f9f9f9;
         }
         tr:hover {
-            background-color: #e9ecef;
+            background-color: #f1f1f1;
         }
     </style>
 </head>
 <body>
 
-<div class="form-container">
+<div class="container">
     <h1>Registro de Usuario</h1>
 
     <?php if ($mensaje): ?>
@@ -192,29 +206,33 @@ try {
         </div>
     <?php endif; ?>
 
-    <form method="post">
-        <div class="form-group">
-            <label for="nombre">Nombre(s)</label>
-            <input type="text" name="nombre" required>
-        </div>
-        <div class="form-group">
-            <label for="primer_apellido">Primer Apellido</label>
-            <input type="text" name="primer_apellido" required>
-        </div>
-        <div class="form-group">
-            <label for="segundo_apellido">Segundo Apellido</label>
-            <input type="text" name="segundo_apellido">
-        </div>
-        <div class="form-group">
-            <label for="correo">Correo Electrónico</label>
-            <input type="email" name="correo" required>
-        </div>
-        <div class="form-group">
-            <label for="telefono">Teléfono</label>
-            <input type="text" name="telefono" required>
-        </div>
-        <button type="submit" name="enviar" class="btn-submit">Enviar</button>
-    </form>
+    <div class="form-section">
+        <form method="post">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="nombre">Nombre(s)</label>
+                    <input type="text" name="nombre" required>
+                </div>
+                <div class="form-group">
+                    <label for="primer_apellido">Primer Apellido</label>
+                    <input type="text" name="primer_apellido" required>
+                </div>
+                <div class="form-group">
+                    <label for="segundo_apellido">Segundo Apellido</label>
+                    <input type="text" name="segundo_apellido">
+                </div>
+                <div class="form-group">
+                    <label for="correo">Correo Electrónico</label>
+                    <input type="email" name="correo" required>
+                </div>
+                <div class="form-group">
+                    <label for="telefono">Teléfono</label>
+                    <input type="text" name="telefono" required>
+                </div>
+            </div>
+            <button type="submit" name="enviar" class="btn-submit">ENVIAR</button>
+        </form>
+    </div>
 
     <?php if (!empty($registros)): ?>
     <h2>Usuarios Registrados</h2>
